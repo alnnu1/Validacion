@@ -12,7 +12,7 @@ namespace Validación.RFC
     /// </summary>
     public static class RFCValidacion
     {
-        public const string RFCRegex = "^([A-ZÑ&]{3,4}) ?(?:- ?)?(\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])) ?(?:- ?)?([A-Z\\d]{2})([A\\d])$";
+        public const string RFCRegex = @"^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])";
 
         /// <summary>
         /// Valida un RFC el cual verifica que cumpla con el formato de RFC <br/>
