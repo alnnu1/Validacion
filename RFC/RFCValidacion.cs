@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace Validación.RFC
 {
@@ -12,7 +7,7 @@ namespace Validación.RFC
     /// </summary>
     public static class RFCValidacion
     {
-        public const string RFCRegex = @"^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])";
+        public const string RFCRegex = @"^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$";
 
         /// <summary>
         /// Valida un RFC el cual verifica que cumpla con el formato de RFC <br/>
@@ -29,10 +24,16 @@ namespace Validación.RFC
 
             //Si no cumple con el formato de RFC, regresa error
             if (!rfcMatch.Success)
+            {
                 return RFCSalida.Error;
+            }
 
-            //Separa el digito verificador del RFC  
-            int digitoVerificador = int.Parse(rfcMatch.Groups[4].Value[0].ToString());
+            //Checa si el digitoVerificador es una A
+            bool digitoVerificadorEsA = rfcMatch.Groups[4].Value[0] == 'A';
+
+            //Separa el digito verificador del RFC
+            int digitoVerificador = digitoVerificadorEsA ? 0 : int.Parse(rfcMatch.Groups[4].Value[0].ToString());
+
             string rfcSinDigito = rfcMatch.Groups[1].Value + rfcMatch.Groups[2].Value + rfcMatch.Groups[3].Value;
 
             const string Diccionario = "0123456789ABCDEFGHIJKLMN&OPQRSTUVWXYZ Ñ";
@@ -44,13 +45,22 @@ namespace Validación.RFC
                 suma += Diccionario.IndexOf(rfcSinDigito[i]) * (lenghtRFC + 1 - i);
             }
 
-            int digitoEsperado = 11 - suma % 11;
-            digitoEsperado = digitoEsperado == 11 ? 0 : digitoEsperado == 10 ? 'A' : digitoEsperado;
+            int digitoEsperado = 11 - (suma % 11);
 
-            if ((digitoEsperado != digitoVerificador) && (!aceptarGenerico || (rfcSinDigito + digitoVerificador.ToString() != "XAXX010101000")))
+            bool digitoEsperadoEsA = digitoEsperado == 10;
+
+            if (digitoEsperado == 11)
+                digitoEsperado = 0;
+
+            if ((digitoEsperadoEsA != digitoVerificadorEsA) && (digitoEsperado != digitoVerificador) && 
+                (!aceptarGenerico || (rfcSinDigito + digitoVerificador.ToString() != "XAXX010101000")))
+            {
                 return RFCSalida.Error;
-            else if (!aceptarGenerico || ((rfcSinDigito + digitoVerificador.ToString()) == "XEXX010101000"))
+            }
+            else if (!aceptarGenerico && ((rfcSinDigito + digitoVerificador.ToString()) == "XEXX010101000"))
+            {
                 return RFCSalida.Error;
+            }
 
             return lenghtRFC == 12 ? RFCSalida.Fisica : RFCSalida.Moral;
         }
