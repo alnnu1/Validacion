@@ -37,12 +37,12 @@ namespace Validación.RFC
             string rfcSinDigito = rfcMatch.Groups[1].Value + rfcMatch.Groups[2].Value + rfcMatch.Groups[3].Value;
 
             const string Diccionario = "0123456789ABCDEFGHIJKLMN&OPQRSTUVWXYZ Ñ";
-            int lenghtRFC = rfcSinDigito.Length;
-            int suma = lenghtRFC == 12 ? 0 : 481;
 
-            for (int i = 0; i < lenghtRFC; i++)
+            int suma = rfcSinDigito.Length == 12 ? 0 : 481;
+
+            for (int i = 0; i < rfcSinDigito.Length; i++)
             {
-                suma += Diccionario.IndexOf(rfcSinDigito[i]) * (lenghtRFC + 1 - i);
+                suma += Diccionario.IndexOf(rfcSinDigito[i]) * (rfcSinDigito.Length + 1 - i);
             }
 
             int digitoEsperado = 11 - (suma % 11);
@@ -62,7 +62,7 @@ namespace Validación.RFC
                 return RFCSalida.Error;
             }
 
-            return lenghtRFC == 12 ? RFCSalida.Fisica : RFCSalida.Moral;
+            return rfcSinDigito.Length == 12 ? RFCSalida.Fisica : RFCSalida.Moral;
         }
 
         /// <summary>
