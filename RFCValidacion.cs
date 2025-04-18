@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Validación.RFC
+namespace Validacion
 {
     /// <summary>
     /// Validación del RFC
@@ -45,19 +45,19 @@ namespace Validación.RFC
                 suma += Diccionario.IndexOf(rfcSinDigito[i]) * (rfcSinDigito.Length + 1 - i);
             }
 
-            int digitoEsperado = 11 - (suma % 11);
+            int digitoEsperado = 11 - suma % 11;
 
             bool digitoEsperadoEsA = digitoEsperado == 10;
 
             if (digitoEsperado == 11)
                 digitoEsperado = 0;
 
-            if ((digitoEsperadoEsA != digitoVerificadorEsA) && (digitoEsperado != digitoVerificador) && 
-                (!aceptarGenerico || (rfcSinDigito + digitoVerificador.ToString() != "XAXX010101000")))
+            if (digitoEsperadoEsA != digitoVerificadorEsA && digitoEsperado != digitoVerificador && 
+                (!aceptarGenerico || rfcSinDigito + digitoVerificador.ToString() != "XAXX010101000"))
             {
                 return RFCSalida.Error;
             }
-            else if (!aceptarGenerico && ((rfcSinDigito + digitoVerificador.ToString()) == "XEXX010101000"))
+            else if (!aceptarGenerico && rfcSinDigito + digitoVerificador.ToString() == "XEXX010101000")
             {
                 return RFCSalida.Error;
             }
