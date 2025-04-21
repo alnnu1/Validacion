@@ -45,14 +45,16 @@ namespace Validacion
                 suma += Diccionario.IndexOf(rfcSinDigito[i]) * (rfcSinDigito.Length + 1 - i);
             }
 
-            int digitoEsperado = 11 - suma % 11;
+            int digitoEsperado = 11 - (suma % 11);
 
             bool digitoEsperadoEsA = digitoEsperado == 10;
 
             if (digitoEsperado == 11)
+            {
                 digitoEsperado = 0;
+            }
 
-            if (digitoEsperadoEsA != digitoVerificadorEsA && digitoEsperado != digitoVerificador && 
+            if (digitoEsperadoEsA != digitoVerificadorEsA && digitoEsperado != digitoVerificador &&
                 (!aceptarGenerico || rfcSinDigito + digitoVerificador.ToString() != "XAXX010101000"))
             {
                 return RFCSalida.Error;
