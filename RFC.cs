@@ -2,12 +2,11 @@
 
 namespace Validacion
 {
-    /// <summary>
-    /// Validación del RFC
-    /// </summary>
-    public static class RFCValidacion
+    public static class RFC
     {
         public const string RFCRegex = @"^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$";
+
+        public const string Diccionario = "0123456789ABCDEFGHIJKLMN&OPQRSTUVWXYZ Ñ";
 
         /// <summary>
         /// Valida un RFC el cual verifica que cumpla con el formato de RFC <br/>
@@ -16,7 +15,7 @@ namespace Validacion
         /// <param name="rfc">El RFC a validar</param>
         /// <param name="aceptarGenerico">Indica si se deberia aceptar un RFC generico</param>
         /// <returns>Regresa <see cref="RFCSalida.Fisica"/> o <see cref="RFCSalida.Moral"/> en caso de que el RFC sea valido, <br/>
-        /// de caso contrario regresara <see cref="RFCSalida.Error"/>
+        /// en caso contrario regresara <see cref="RFCSalida.Error"/>
         /// </returns>
         public static RFCSalida ValidarRFC(string rfc, bool aceptarGenerico = true)
         {
@@ -35,8 +34,6 @@ namespace Validacion
             int digitoVerificador = digitoVerificadorEsA ? 0 : int.Parse(rfcMatch.Groups[4].Value[0].ToString());
 
             string rfcSinDigito = rfcMatch.Groups[1].Value + rfcMatch.Groups[2].Value + rfcMatch.Groups[3].Value;
-
-            const string Diccionario = "0123456789ABCDEFGHIJKLMN&OPQRSTUVWXYZ Ñ";
 
             int suma = rfcSinDigito.Length == 12 ? 0 : 481;
 
